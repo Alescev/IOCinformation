@@ -1,0 +1,45 @@
+# Python virtual environment
+.venv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Configuration file with sensitive information
+config.py
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Compiled Python files
+*.pyc
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# Build directories
+build/
+dist/
+
+# User-specific files
+*.swp
+*.swo
+
+# Environment variables file (if you're using one)
+.env
+
+# Exported data files (if you don't want to track these)
+*.csv
+*.pdf
+*.json
+
+# Any other sensitive or environment-specific files
+secrets.json

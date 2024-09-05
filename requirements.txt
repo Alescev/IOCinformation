@@ -1,0 +1,10 @@
+PyQt5
+PyQtWebEngine
+requests
+folium
+reportlab
+OTXv2
+stix2
+urllib3
+pycti
+dnspython

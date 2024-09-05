@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Geolocation Explorer</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Preload critical assets -->
+    <link rel="preload" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" as="style">
+    <link rel="preload" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" as="script">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>IP Geolocation Explorer</h1>
+        </header>
+        <main>
+            <div id="input-container">
+                <input type="text" id="ip-input" placeholder="Enter IP Addresses or Domain Names (up to 10, separated by commas)">
+                <input type="file" id="csv-upload" accept=".csv" style="display: none;">
+                <button id="csv-upload-button">Upload CSV</button>
+                <button id="search-button" disabled>Search</button>
+            </div>
+            <div id="content-container">
+                <div id="results-container">
+                    <h2>Results <span id="ip-counter"></span></h2>
+                    <div id="results-text"></div>
+                    <div id="export-container">
+                        <button id="export-csv">Export CSV</button>
+                        <button id="export-pdf">Export PDF</button>
+                        <button id="export-stix">Export STIX</button>
+                    </div>
+                </div>
+                <div id="map-container">
+                    <h2>Global IP Map</h2>
+                    <div id="map"></div>
+                </div>
+            </div>
+            <!-- Add this inside the <main> tag -->
+            <div id="settings-container">
+                <h2>Settings</h2>
+                <form id="settings-form">
+                    <div class="api-key-container">
+                        <label for="vt-api-key">VirusTotal API Key:</label>
+                        <input type="password" id="vt-api-key" name="vt-api-key" value="********************************">
+                    </div>
+                    <div class="api-key-container">
+                        <label for="abuseipdb-api-key">AbuseIPDB API Key:</label>
+                        <input type="password" id="abuseipdb-api-key" name="abuseipdb-api-key" value="********************************">
+                    </div>
+                    <div class="api-key-container">
+                        <label for="greynoise-api-key">GreyNoise API Key:</label>
+                        <input type="password" id="greynoise-api-key" name="greynoise-api-key" value="********************************">
+                    </div>
+                    <div class="api-key-container">
+                        <label for="ipqualityscore-api-key">IPQualityScore API Key:</label>
+                        <input type="password" id="ipqualityscore-api-key" name="ipqualityscore-api-key" value="********************************">
+                    </div>
+                    <div class="api-key-container">
+                        <label for="opencti-api-key">OpenCTI API Key:</label>
+                        <input type="password" id="opencti-api-key" name="opencti-api-key" value="********************************">
+                    </div>
+                    <div class="api-key-container">
+                        <label for="opencti-url">OpenCTI URL:</label>
+                        <input type="password" id="opencti-url" name="opencti-url" value="********************************">
+                    </div>
+                    <button type="button" id="toggle-api-visibility">Show/Hide All</button>
+                    <button type="submit">Save Settings</button>
+                </form>
+            </div>
+        </main>
+    </div>
+    <!-- Load scripts at the end for better performance -->
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
