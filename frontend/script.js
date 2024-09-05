@@ -224,6 +224,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createOpenCTIInfo(index) {
         const entryData = currentData.detailed_info[index];
+        if (!entryData) {
+            console.error('No data available for index:', index);
+            return document.createElement('div'); // Return an empty div if no data
+        }
+
         const openctiData = entryData.opencti;
         const isOriginalDomain = 'original_domain' in entryData;
         const openctiInfo = document.createElement('div');
@@ -232,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const icon = document.createElement('span');
         icon.className = 'opencti-icon';
 
-        if (openctiData.error) {
+        if (!openctiData || openctiData.error) {
             icon.innerHTML = '❗';
             icon.title = 'OpenCTI data not available';
             openctiInfo.appendChild(icon);
@@ -534,6 +539,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('settings-form').addEventListener('submit', function(event) {
         event.preventDefault();
         
+        if (!isVisible) {
+            alert('Please show all API keys before saving settings.');
+            return;
+        }
+        
         const apiKeys = {
             vt: document.getElementById('vt-api-key').value,
             abuseipdb: document.getElementById('abuseipdb-api-key').value,
@@ -548,6 +558,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = JSON.parse(response);
             if (data.status === 'success') {
                 alert('API settings updated successfully.');
+                // Update input values after successful save
+                updateInputValues();
             } else {
                 alert('Error updating API settings: ' + data.message);
             }
@@ -560,8 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isVisible = false;
 
     function updateSaveButtonState() {
-        const anyHidden = Array.from(apiInputs).some(input => input.type === 'password');
-        saveSettingsButton.disabled = anyHidden;
+        saveSettingsButton.disabled = !isVisible;
     }
 
     toggleVisibilityButton.addEventListener('click', function() {
@@ -583,32 +594,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update save button state on page load
     updateSaveButtonState();
 
-    // Modify the settings form submission event listener
-    document.getElementById('settings-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        if (!isVisible) {
-            alert('Please show all API keys before saving settings.');
-            return;
-        }
-        
-        const apiKeys = {
-            vt: document.getElementById('vt-api-key').value,
-            abuseipdb: document.getElementById('abuseipdb-api-key').value,
-            greynoise: document.getElementById('greynoise-api-key').value,
-            ipqualityscore: document.getElementById('ipqualityscore-api-key').value,
-            opencti: document.getElementById('opencti-api-key').value
-        };
-        
-        const openctiUrl = document.getElementById('opencti-url').value;
-        
-        backend.update_api_settings(JSON.stringify({apiKeys, openctiUrl}), function(response) {
-            const data = JSON.parse(response);
-            if (data.status === 'success') {
-                alert('API settings updated successfully.');
-            } else {
-                alert('Error updating API settings: ' + data.message);
-            }
+    // Add this new function to update input values after saving
+    function updateInputValues() {
+        apiInputs.forEach(input => {
+            const inputName = input.name === 'opencti-url' ? 'opencti-url' : input.name.replace('-api-key', '');
+            backend.toggle_api_key_visibility(inputName, function(response) {
+                const data = JSON.parse(response);
+                if (data.status === 'success') {
+                    input.value = data.value;
+                }
+            });
         });
-    });
+    }
 });

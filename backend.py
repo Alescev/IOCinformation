@@ -39,13 +39,25 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class Backend(QObject):
     def __init__(self):
         super().__init__()
-        self.api_keys = API_KEYS
-        self.opencti_url = OPENCTI_URL
-        self.masked_api_keys = {key: '*' * len(value) for key, value in self.api_keys.items()}
-        self.masked_opencti_url = '*' * len(self.opencti_url)
+        self.load_config()
         self.session = requests.Session()
         self.opencti_client = None
         self.init_opencti_client()
+
+    def load_config(self):
+        try:
+            from config import API_KEYS, OPENCTI_URL
+            self.api_keys = API_KEYS
+            self.opencti_url = OPENCTI_URL
+        except ImportError:
+            print("Error: config.py file is missing or corrupted. Using default values.")
+            self.api_keys = {
+                'vt': '', 'abuseipdb': '', 'greynoise': '', 'ipqualityscore': '', 'opencti': ''
+            }
+            self.opencti_url = ''
+
+        self.masked_api_keys = {key: '*' * len(value) for key, value in self.api_keys.items()}
+        self.masked_opencti_url = '*' * len(self.opencti_url)
 
     def init_opencti_client(self):
         try:
@@ -604,11 +616,13 @@ class Backend(QObject):
     @pyqtSlot(str, result=str)
     def toggle_api_key_visibility(self, key):
         if key in self.api_keys:
-            self.masked_api_keys[key] = self.api_keys[key] if self.masked_api_keys[key].startswith('*') else '*' * len(self.api_keys[key])
-            return json.dumps({"status": "success", "key": key, "value": self.masked_api_keys[key]})
+            value = self.api_keys[key] if self.masked_api_keys[key].startswith('*') else '*' * len(self.api_keys[key])
+            self.masked_api_keys[key] = value
+            return json.dumps({"status": "success", "key": key, "value": value})
         elif key == 'opencti-url':
-            self.masked_opencti_url = self.opencti_url if self.masked_opencti_url.startswith('*') else '*' * len(self.opencti_url)
-            return json.dumps({"status": "success", "key": key, "value": self.masked_opencti_url})
+            value = self.opencti_url if self.masked_opencti_url.startswith('*') else '*' * len(self.opencti_url)
+            self.masked_opencti_url = value
+            return json.dumps({"status": "success", "key": key, "value": value})
         else:
             return json.dumps({"status": "error", "message": "Invalid API key"})
 
@@ -616,13 +630,24 @@ class Backend(QObject):
     def update_api_settings(self, settings_json):
         try:
             settings = json.loads(settings_json)
-            for key, value in settings['apiKeys'].items():
-                if value != self.masked_api_keys[key]:
-                    # Only update if the value has changed (i.e., user edited it)
-                    self.api_keys[key] = value
-                    self.masked_api_keys[key] = '*' * len(value)
+            if 'apiKeys' not in settings or 'openctiUrl' not in settings:
+                raise ValueError("Missing 'apiKeys' or 'openctiUrl' in settings")
+            
+            self.api_keys = settings['apiKeys']
             self.opencti_url = settings['openctiUrl']
+            self.masked_api_keys = {key: '*' * len(value) for key, value in self.api_keys.items()}
             self.masked_opencti_url = '*' * len(self.opencti_url)
+            
+            # Update config.py file
+            config_content = f"""
+# API Keys
+API_KEYS = {self.api_keys}
+
+# OpenCTI URL
+OPENCTI_URL = "{self.opencti_url}"
+"""
+            with open('config.py', 'w') as f:
+                f.write(config_content)
             
             # Reinitialize OpenCTI client with new settings
             self.init_opencti_client()
