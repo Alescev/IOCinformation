@@ -8,3 +8,4 @@ stix2
 urllib3
 pycti
 dnspython
+requests

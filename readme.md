@@ -1,42 +1,98 @@
-# IP Geolocation Explorer
+# 🌍 IP Geolocation Explorer
 
-IP Geolocation Explorer is a user-friendly tool that helps you learn more about IP addresses and domain names. It shows you where they're located on a map and gives you information about their reputation and potential security risks.
+IP Geolocation Explorer is a powerful and user-friendly tool that provides comprehensive information about IP addresses and domain names. It offers a rich set of features to help you investigate and analyze network entities.
 
-## What Can It Do?
+## 🚀 Features
 
-- Look up information for up to 10 IP addresses or domain names at once
-- Show locations on an interactive map
-- Provide safety scores from trusted sources
-- Connect with threat intelligence databases
-- Save your results in different file formats
-- Upload a list of addresses from a file
+### 📊 Multi-Entity Lookup
+- Look up information for up to 10 IP addresses or domain names simultaneously
+- Support for both IPv4 and IPv6 addresses, domains and escaped values.
 
-## Getting Started
+### 🗺️ Interactive Mapping
+- Visualize locations on an interactive global map
+- Color-coded markers for easy identification
 
-1. Make sure you have Python installed on your computer.
+### 🛡️ Reputation Analysis
+- Aggregate safety scores from trusted sources:
+  - VirusTotal
+  - AbuseIPDB
+  - GreyNoise
+  - IPQualityScore
 
-2. Download or clone this project to your computer.
+### 🔍 Detailed Information
+- Comprehensive data for each entry:
+  - Geographic location (country, city, region)
+  - ISP and organization details
+  - AS number
+  - Timezone
 
-3. Open a command prompt or terminal in the project folder.
+### 🕵️ Threat Intelligence
+- Integration with OpenCTI for advanced threat intelligence
+- Direct link to OpenCTI dashboard for further investigation
 
-4. Set up the project by running these commands:
+### 🔄 Reverse DNS Lookup
+- Perform reverse DNS lookups for IP addresses
+
+### 📰 Related Articles
+- Fetch relevant news articles using Bing Search API
+- Customized search queries for more accurate results
+
+### 📤 Export Capabilities
+- Export results in multiple formats:
+  - CSV for spreadsheet analysis
+  - PDF for professional reporting
+  - STIX for threat intelligence sharing
+
+### 📁 Bulk Import
+- Upload a CSV file with multiple IP addresses or domains
+
+### ⚙️ Customizable Settings
+- Configure API keys for various services
+- Set OpenCTI URL for your specific instance
+
+## 🛠️ Getting Started
+
+1. Ensure Python is installed on your system.
+
+2. Clone this repository:
+   ```
+   git clone https://github.com/yourusername/ip-geolocation-explorer.git
+   cd ip-geolocation-explorer
+   ```
+
+3. Set up a virtual environment and install dependencies:
    ```
    python -m venv .venv
-   .venv\Scripts\activate  # On Windows
-   source .venv/bin/activate  # On Mac/Linux
+   source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
-5. Look for the `config.example.py` file in the main folder. Make a copy of it and name the copy `config.py`.
+4. Create your configuration file:
+   - Copy `config.example.py` to `config.py`
+   - Open `config.py` and replace the placeholder API keys with your own
 
-6. Open `config.py` and replace the example API keys with your own. You'll need to sign up for free accounts at VirusTotal, AbuseIPDB, GreyNoise, IPQualityScore, and OpenCTI to get these keys.
+5. Launch the application:
+   ```
+   python main.py
+   ```
 
-## Using the Tool
+## 🖥️ Usage
 
-To start the application, run: 
- ```
-python main.py
- ```
-Type in the IP addresses or domain names you want to look up, separated by commas. Click "Search" to see the results. You can save your results using the export buttons.
+1. Enter IP addresses or domain names in the input field (comma-separated for multiple entries)
+2. Click "Search" or press Enter to initiate the lookup
+3. View results on the interactive map and in the detailed results panel
+4. Use additional features like "More Info", "Detailed Reputation", and "Reverse DNS" for in-depth analysis
+5. Export your results using the export buttons
 
+## 🔑 API Keys
 
+To fully utilize all features, you'll need to obtain API keys for the following services:
+
+- VirusTotal
+- AbuseIPDB
+- GreyNoise
+- IPQualityScore
+- OpenCTI
+- Bing Search
+
+Enter these keys in the Settings panel within the application.

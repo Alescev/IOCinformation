@@ -426,3 +426,33 @@ header {
     color: #666666;
     cursor: not-allowed;
 }
+
+.bing-results-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+}
+
+.bing-results-container h4 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.bing-results-container ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.bing-results-container li {
+    margin-bottom: 10px;
+}
+
+.bing-results-container a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.bing-results-container a:hover {
+    text-decoration: underline;
+}

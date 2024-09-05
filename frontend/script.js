@@ -219,6 +219,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         mainContent.appendChild(buttonContainer);
+
+        const bingResultsContainer = document.createElement('div');
+        bingResultsContainer.className = 'bing-results-container';
+        
+        const bingResultsHeader = document.createElement('h4');
+        bingResultsHeader.textContent = 'Related Articles:';
+        bingResultsContainer.appendChild(bingResultsHeader);
+
+        if (info.bing_results && !info.bing_results.error) {
+            const bingResultsList = document.createElement('ul');
+            info.bing_results.forEach(result => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = result.url;
+                link.textContent = result.name;
+                link.target = '_blank';
+                listItem.appendChild(link);
+                bingResultsList.appendChild(listItem);
+            });
+            bingResultsContainer.appendChild(bingResultsList);
+        } else if (info.bing_results && info.bing_results.error) {
+            const errorMessage = document.createElement('p');
+            errorMessage.textContent = `Error: ${info.bing_results.error}`;
+            errorMessage.style.color = 'red';
+            bingResultsContainer.appendChild(errorMessage);
+        }
+
+        mainContent.appendChild(bingResultsContainer);
+
         return mainContent;
     }
 

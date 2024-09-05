@@ -52,7 +52,7 @@ class Backend(QObject):
         except ImportError:
             print("Error: config.py file is missing or corrupted. Using default values.")
             self.api_keys = {
-                'vt': '', 'abuseipdb': '', 'greynoise': '', 'ipqualityscore': '', 'opencti': ''
+                'vt': '', 'abuseipdb': '', 'greynoise': '', 'ipqualityscore': '', 'opencti': '', 'bing': ''
             }
             self.opencti_url = ''
 
@@ -91,6 +91,17 @@ class Backend(QObject):
                     results.append(f"{entry}: Error - {str(exc)}")
                     colors.append('#808080')
                     detailed_info.append(None)
+
+        # Fetch Bing search results for each entry
+        for info in detailed_info:
+            if info:
+                query = info.get('original_domain') or info['query']
+                is_domain = 'original_domain' in info
+                bing_results = json.loads(self.fetch_bing_results(query, is_domain))
+                if 'error' not in bing_results:
+                    info['bing_results'] = bing_results['webPages']['value'][:5]  # Limit to top 5 results
+                else:
+                    info['bing_results'] = {"error": bing_results['error']}
 
         return json.dumps({
             "results": results,
@@ -375,7 +386,7 @@ class Backend(QObject):
                 fieldnames = ['Input', 'IP', 'Country', 'City', 'ISP', 'VirusTotal Score', 'AbuseIPDB Score', 'GreyNoise Classification', 'IPQualityScore Fraud Score']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()
-                for info in data['detailed_info']:
+                for info in data:
                     if info:
                         writer.writerow({
                             'Input': info.get('original_domain', info['query']),
@@ -664,3 +675,31 @@ OPENCTI_URL = "{self.opencti_url}"
             return json.dumps({"status": "success"})
         except Exception as e:
             return json.dumps({"status": "error", "message": str(e)})
+
+    @pyqtSlot(str, result=str)
+    def fetch_bing_results(self, query, is_domain=False):
+        try:
+            headers = {
+                'Ocp-Apim-Subscription-Key': self.api_keys['bing'],
+            }
+            
+            # Use the domain if available, otherwise use the IP
+            search_query = query if is_domain else f'"{query}"'
+            
+            # Add escaped versions to the search query
+            escaped_query = query.replace('.', '[.]').replace(':', '[:]')
+            
+            params = {
+                'q': f'{search_query} OR "{escaped_query}" -site:{query}',
+                'count': '50',
+                'offset': '0',
+                'mkt': 'en-US',
+                'safesearch': 'Moderate'
+            }
+            response = requests.get('https://api.bing.microsoft.com/v7.0/search', headers=headers, params=params)
+            response.raise_for_status()
+            return json.dumps(response.json())
+        except requests.exceptions.RequestException as e:
+            if 'quota' in str(e).lower():
+                return json.dumps({"error": "Bing API rate limit reached. Please try again later."})
+            return json.dumps({"error": str(e)})
