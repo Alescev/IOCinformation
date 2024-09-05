@@ -57,7 +57,7 @@ IP Geolocation Explorer is a powerful and user-friendly tool that provides compr
 2. Clone this repository:
    ```
    git clone https://github.com/Alescev/IOCinformation.git
-   cd ip-geolocation-explorer
+   cd IOCinformation
    ```
 
 3. Set up a virtual environment and install dependencies:
