@@ -26,6 +26,7 @@ import concurrent.futures
 from pycti import OpenCTIApiClient
 import dns.resolver
 import logging
+import openai
 
 # Import the config files
 from config import API_KEYS, OPENCTI_URL
@@ -43,6 +44,7 @@ class Backend(QObject):
         self.session = requests.Session()
         self.opencti_client = None
         self.init_opencti_client()
+        self.openai_client = openai.OpenAI(api_key=self.api_keys['openai'])
 
     def load_config(self):
         try:
@@ -52,7 +54,7 @@ class Backend(QObject):
         except ImportError:
             print("Error: config.py file is missing or corrupted. Using default values.")
             self.api_keys = {
-                'vt': '', 'abuseipdb': '', 'greynoise': '', 'ipqualityscore': '', 'opencti': '', 'bing': ''
+                'vt': '', 'abuseipdb': '', 'greynoise': '', 'ipqualityscore': '', 'opencti': '', 'bing': '', 'openai': ''
             }
             self.opencti_url = ''
 
@@ -663,6 +665,9 @@ OPENCTI_URL = "{self.opencti_url}"
             # Reinitialize OpenCTI client with new settings
             self.init_opencti_client()
             
+            # Update OpenAI API key
+            self.openai_client = openai.OpenAI(api_key=self.api_keys['openai'])
+            
             return json.dumps({"status": "success"})
         except Exception as e:
             return json.dumps({"status": "error", "message": str(e)})
@@ -703,3 +708,35 @@ OPENCTI_URL = "{self.opencti_url}"
             if 'quota' in str(e).lower():
                 return json.dumps({"error": "Bing API rate limit reached. Please try again later."})
             return json.dumps({"error": str(e)})
+
+    @pyqtSlot(str, result=str)
+    def generate_summary(self, data):
+        try:
+            data = json.loads(data)
+            prompt = self.create_summary_prompt(data)
+            
+            response = self.openai_client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a cyber threat intelligence analyst. use the provided information to provide a useful and insightful summary of the data, using a technical and professional style. use a nice and clear formatting with bolds and subtitles. Do not use bullets points. if you find the tag hygiene it means that is market in the opencti platform as legitimate, so mentions that from the opencti platform it is considered legitimate without mentioning directly the hygiene tag. do not use bullet points."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            
+            summary = response.choices[0].message.content
+            return json.dumps({"status": "success", "summary": summary})
+        except Exception as e:
+            return json.dumps({"status": "error", "message": str(e)})
+
+    def create_summary_prompt(self, data):
+        prompt = "Summarize the following IP geolocation and threat intelligence information:\n\n"
+        for info in data['detailed_info']:
+            if info:
+                prompt += f"IP: {info['query']}\n"
+                prompt += f"Location: {info['country']}, {info['city']}\n"
+                prompt += f"ISP: {info['isp']}\n"
+                prompt += f"Reputation: {info['osint']['reputation']['status']} (Score: {info['osint']['reputation']['score']})\n"
+                if 'opencti' in info and info['opencti']['found']:
+                    prompt += f"OpenCTI: Found (Labels: {', '.join(info['opencti']['labels'])})\n"
+                prompt += "\n"
+        return prompt

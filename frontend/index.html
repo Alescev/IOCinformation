@@ -30,7 +30,12 @@
                         <button id="export-csv">Export CSV</button>
                         <button id="export-pdf">Export PDF</button>
                         <button id="export-stix">Export STIX</button>
+                        <button id="generate-summary">Generate Summary</button>
                     </div>
+                </div>
+                <div id="summary-container" style="display: none;">
+                    <h2>AI-Generated Summary</h2>
+                    <div id="summary-content"></div>
                 </div>
                 <div id="map-container">
                     <h2>Global IP Map</h2>
@@ -68,6 +73,10 @@
                     <div class="api-key-container">
                         <label for="bing-api-key">Bing API Key:</label>
                         <input type="password" id="bing-api-key" name="bing-api-key" value="********************************">
+                    </div>
+                    <div class="api-key-container">
+                        <label for="openai-api-key">OpenAI API Key:</label>
+                        <input type="password" id="openai-api-key" name="openai-api-key" value="********************************">
                     </div>
                     <button type="button" id="toggle-api-visibility">Show/Hide All</button>
                     <button type="submit">Save Settings</button>

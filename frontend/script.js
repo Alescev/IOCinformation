@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.exportContainer) {
             elements.exportContainer.style.display = show ? 'flex' : 'none';
         }
+        const generateSummaryButton = document.getElementById('generate-summary');
+        if (generateSummaryButton) {
+            generateSummaryButton.style.display = show ? 'inline-block' : 'none';
+        }
     }
 
     // Helper functions
@@ -101,6 +105,29 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleButton.addEventListener('click', () => toggleApiKeyVisibility(key));
         }
     });
+
+    // Add this to the existing event listeners section
+    document.getElementById('generate-summary').addEventListener('click', generateSummary);
+
+    // Add this function to handle the summary generation
+    function generateSummary() {
+        if (!currentData || !currentData.detailed_info) {
+            alert('No data to summarize. Please perform a search first.');
+            return;
+        }
+
+        backend.generate_summary(JSON.stringify(currentData), function(response) {
+            const data = JSON.parse(response);
+            if (data.status === 'success') {
+                const summaryContainer = document.getElementById('summary-container');
+                const summaryContent = document.getElementById('summary-content');
+                summaryContent.textContent = data.summary;
+                summaryContainer.style.display = 'block';
+            } else {
+                alert('Error generating summary: ' + data.message);
+            }
+        });
+    }
 
     // Main functions
     function performSearch() {
