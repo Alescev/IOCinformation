@@ -718,7 +718,7 @@ OPENCTI_URL = "{self.opencti_url}"
             response = self.openai_client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "You are a cyber threat intelligence analyst. use the provided information to provide a useful and insightful summary of the data, using a technical and professional style. use a nice and clear formatting with bolds and subtitles. Do not use bullets points. if you find the tag hygiene it means that is market in the opencti platform as legitimate, so mentions that from the opencti platform it is considered legitimate without mentioning directly the hygiene tag. do not use bullet points."},
+                    {"role": "system", "content": "You are a cyber threat intelligence analyst. use the provided information to provide a useful and insightful summary of the data, using a technical and professional style. use a nice and clear formatting with bold for relevant words and subtitles. use markdown. Do not use bullets points, but rather sentences. if you find the tag hygiene it means that is market in the opencti platform as legitimate, so mentions that from the opencti platform it is considered legitimate without mentioning directly the hygiene tag. do not use bullet points."},
                     {"role": "user", "content": prompt}
                 ]
             )
@@ -729,13 +729,23 @@ OPENCTI_URL = "{self.opencti_url}"
             return json.dumps({"status": "error", "message": str(e)})
 
     def create_summary_prompt(self, data):
-        prompt = "Summarize the following IP geolocation and threat intelligence information:\n\n"
+        prompt = "Summarize the following IP geolocation and threat intelligence information with a technical and professional style. use sentences, not bullet points.:\n\n"
         for info in data['detailed_info']:
             if info:
-                prompt += f"IP: {info['query']}\n"
-                prompt += f"Location: {info['country']}, {info['city']}\n"
-                prompt += f"ISP: {info['isp']}\n"
-                prompt += f"Reputation: {info['osint']['reputation']['status']} (Score: {info['osint']['reputation']['score']})\n"
+                if 'original_domain' in info:
+                    # This is a domain entry
+                    prompt += f"Domain: {info['original_domain']}\n"
+                    prompt += f"Associated IP: {info['query']}\n"
+                    prompt += f"Location: {info['country']}, {info['city']}\n"
+                    prompt += f"ISP: {info['isp']}\n"
+                    prompt += f"Reputation: {info['osint']['reputation']['status']} (Score: {info['osint']['reputation']['score']})\n"
+                else:
+                    # This is an IP entry
+                    prompt += f"IP: {info['query']}\n"
+                    prompt += f"Location: {info['country']}, {info['city']}\n"
+                    prompt += f"ISP: {info['isp']}\n"
+                    prompt += f"Reputation: {info['osint']['reputation']['status']} (Score: {info['osint']['reputation']['score']})\n"
+                
                 if 'opencti' in info and info['opencti']['found']:
                     prompt += f"OpenCTI: Found (Labels: {', '.join(info['opencti']['labels'])})\n"
                 prompt += "\n"

@@ -121,7 +121,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 const summaryContainer = document.getElementById('summary-container');
                 const summaryContent = document.getElementById('summary-content');
-                summaryContent.textContent = data.summary;
+                
+                // Convert Markdown-style formatting to HTML
+                let formattedSummary = data.summary
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold text
+                    .replace(/^# (.*$)/gm, '<h1>$1</h1>')  // H1 headers
+                    .replace(/^## (.*$)/gm, '<h2>$1</h2>')  // H2 headers
+                    .replace(/^### (.*$)/gm, '<h3>$1</h3>')  // H3 headers
+                    .replace(/\n/g, '<br>');  // Line breaks
+
+                summaryContent.innerHTML = formattedSummary;
                 summaryContainer.style.display = 'block';
             } else {
                 alert('Error generating summary: ' + data.message);
