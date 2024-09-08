@@ -386,7 +386,7 @@ class Backend(QObject):
                 fieldnames = ['Input', 'IP', 'Country', 'City', 'ISP', 'VirusTotal Score', 'AbuseIPDB Score', 'GreyNoise Classification', 'IPQualityScore Fraud Score']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()
-                for info in data:
+                for info in data['detailed_info']:
                     if info:
                         writer.writerow({
                             'Input': info.get('original_domain', info['query']),
