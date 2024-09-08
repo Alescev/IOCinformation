@@ -27,7 +27,7 @@ from pycti import OpenCTIApiClient
 import dns.resolver
 import logging
 
-# Import the config file
+# Import the config files
 from config import API_KEYS, OPENCTI_URL
 
 # Add this near the top of your file, after the imports
