@@ -52,6 +52,7 @@ class Backend(QObject):
             self.api_keys = API_KEYS
             self.opencti_url = OPENCTI_URL
         except ImportError:
+            #updated with bing and openai keys.
             print("Error: config.py file is missing or corrupted. Using default values.")
             self.api_keys = {
                 'vt': '', 'abuseipdb': '', 'greynoise': '', 'ipqualityscore': '', 'opencti': '', 'bing': '', 'openai': ''

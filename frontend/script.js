@@ -614,7 +614,9 @@ document.addEventListener('DOMContentLoaded', function() {
             abuseipdb: document.getElementById('abuseipdb-api-key').value,
             greynoise: document.getElementById('greynoise-api-key').value,
             ipqualityscore: document.getElementById('ipqualityscore-api-key').value,
-            opencti: document.getElementById('opencti-api-key').value
+            opencti: document.getElementById('opencti-api-key').value,
+            bing: document.getElementById('bing-api-key').value,
+            openai: document.getElementById('openai-api-key').value
         };
         
         const openctiUrl = document.getElementById('opencti-url').value;
