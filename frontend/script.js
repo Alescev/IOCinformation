@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.exportContainer) {
             elements.exportContainer.style.display = show ? 'flex' : 'none';
         }
+        const generateSummaryButton = document.getElementById('generate-summary');
+        if (generateSummaryButton) {
+            generateSummaryButton.style.display = show ? 'inline-block' : 'none';
+        }
     }
 
     // Helper functions
@@ -101,6 +105,38 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleButton.addEventListener('click', () => toggleApiKeyVisibility(key));
         }
     });
+
+    // Add this to the existing event listeners section
+    document.getElementById('generate-summary').addEventListener('click', generateSummary);
+
+    // Add this function to handle the summary generation
+    function generateSummary() {
+        if (!currentData || !currentData.detailed_info) {
+            alert('No data to summarize. Please perform a search first.');
+            return;
+        }
+
+        backend.generate_summary(JSON.stringify(currentData), function(response) {
+            const data = JSON.parse(response);
+            if (data.status === 'success') {
+                const summaryContainer = document.getElementById('summary-container');
+                const summaryContent = document.getElementById('summary-content');
+                
+                // Convert Markdown-style formatting to HTML
+                let formattedSummary = data.summary
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold text
+                    .replace(/^# (.*$)/gm, '<h1>$1</h1>')  // H1 headers
+                    .replace(/^## (.*$)/gm, '<h2>$1</h2>')  // H2 headers
+                    .replace(/^### (.*$)/gm, '<h3>$1</h3>')  // H3 headers
+                    .replace(/\n/g, '<br>');  // Line breaks
+
+                summaryContent.innerHTML = formattedSummary;
+                summaryContainer.style.display = 'block';
+            } else {
+                alert('Error generating summary: ' + data.message);
+            }
+        });
+    }
 
     // Main functions
     function performSearch() {
@@ -452,58 +488,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        let exportFunction;
-        switch (format) {
-            case 'csv':
-                exportFunction = exportCSV;
-                break;
-            case 'pdf':
-                exportFunction = exportPDF;
-                break;
-            case 'stix':
-                exportFunction = exportSTIX;
-                break;
-            default:
-                alert('Invalid export format');
-                return;
+        // Include AI summary if available
+        const summaryContent = document.getElementById('summary-content');
+        if (summaryContent && summaryContent.textContent) {
+            currentData.ai_summary = summaryContent.textContent;
         }
 
-        exportFunction();
-    }
-
-    function exportCSV() {
-        backend.export_csv(JSON.stringify(currentData), function(response) {
+        backend[`export_${format}`](JSON.stringify(currentData), function(response) {
             const data = JSON.parse(response);
             if (data.status === 'success') {
-                alert('CSV file exported successfully: ' + data.filename);
-            } else {
-                alert('Error exporting CSV: ' + data.message);
-            }
-        });
-    }
-
-    function exportPDF() {
-        backend.export_pdf(JSON.stringify(currentData), function(response) {
-            const data = JSON.parse(response);
-            if (data.status === 'success') {
-                alert('PDF file exported successfully: ' + data.filename);
+                alert(`${format.toUpperCase()} file exported successfully: ${data.filename}`);
             } else if (data.status === 'cancelled') {
-                console.log('PDF export cancelled by user');
+                console.log(`${format.toUpperCase()} export cancelled by user`);
             } else {
-                alert('Error exporting PDF: ' + data.message);
-            }
-        });
-    }
-
-    function exportSTIX() {
-        backend.export_stix(JSON.stringify(currentData), function(response) {
-            const data = JSON.parse(response);
-            if (data.status === 'success') {
-                alert('STIX file exported successfully: ' + data.filename);
-            } else if (data.status === 'cancelled') {
-                console.log('STIX export cancelled by user');
-            } else {
-                alert('Error exporting STIX: ' + data.message);
+                alert(`Error exporting ${format.toUpperCase()}: ${data.message}`);
             }
         });
     }
@@ -578,7 +576,9 @@ document.addEventListener('DOMContentLoaded', function() {
             abuseipdb: document.getElementById('abuseipdb-api-key').value,
             greynoise: document.getElementById('greynoise-api-key').value,
             ipqualityscore: document.getElementById('ipqualityscore-api-key').value,
-            opencti: document.getElementById('opencti-api-key').value
+            opencti: document.getElementById('opencti-api-key').value,
+            bing: document.getElementById('bing-api-key').value,
+            openai: document.getElementById('openai-api-key').value
         };
         
         const openctiUrl = document.getElementById('opencti-url').value;
@@ -635,4 +635,37 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeIcon = document.getElementById('dark-mode-icon');
+    const body = document.body;
+
+    // Function to update button text and icon
+    function updateDarkModeButton(isDarkMode) {
+        if (isDarkMode) {
+            darkModeToggle.innerHTML = '<span id="dark-mode-icon">☀️</span> Light Mode';
+        } else {
+            darkModeToggle.innerHTML = '<span id="dark-mode-icon">🌙</span> Dark Mode';
+        }
+    }
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        body.classList.add('dark-mode');
+        updateDarkModeButton(true);
+    } else {
+        updateDarkModeButton(false);
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        const isDarkMode = body.classList.contains('dark-mode');
+        if (isDarkMode) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', null);
+        }
+        updateDarkModeButton(isDarkMode);
+    });
 });

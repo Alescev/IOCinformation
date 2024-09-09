@@ -1,60 +1,53 @@
-# 🌍 IP Geolocation Explorer
+# 🌐 IP Geolocation Explorer
 
-IP Geolocation Explorer is a powerful and user-friendly tool that provides comprehensive information about IP addresses and domain names. It offers a rich set of features to help you investigate and analyze network entities.
+IP Geolocation Explorer is a tool designed for efficient IP and domain lookups, primarily for use by cyber threat intelligence analysts. It provides comprehensive information about network entities, leveraging multiple data sources and APIs. This application was developed with assistance from CursorAI to enhance functionality and code quality.
 
 ## 🚀 Features
 
-### 📊 Multi-Entity Lookup
-- Look up information for up to 10 IP addresses or domain names simultaneously
-- Support for both IPv4 and IPv6 addresses, domains and escaped values.
+### 🔍 Multi-Entity Lookup
+- Simultaneous lookup for up to 10 IP addresses or domain names
+- Support for IPv4, IPv6 addresses, and domain names including escaped values
 
-### 🗺️ Interactive Mapping
-- Visualize locations on an interactive global map
-- Color-coded markers for easy identification
+### 🗺️ Geolocation Visualization
+- Interactive global map with color-coded markers
+- Detailed geographic information (country, city, region)
 
-### 🛡️ Reputation Analysis
-- Aggregate safety scores from trusted sources:
-  - VirusTotal
-  - AbuseIPDB
-  - GreyNoise
-  - IPQualityScore
+### 🛡️ Threat Intelligence Integration
+- Reputation analysis from multiple sources (VirusTotal, AbuseIPDB, GreyNoise, IPQualityScore)
+- OpenCTI integration for advanced threat intelligence
+- Direct link to OpenCTI dashboard
 
-### 🔍 Detailed Information
-- Comprehensive data for each entry:
-  - Geographic location (country, city, region)
-  - ISP and organization details
-  - AS number
-  - Timezone
+### 🌐 Network Information
+- ISP and organization details
+- AS number
+- Timezone
+- Reverse DNS lookup for IP addresses
 
-### 🕵️ Threat Intelligence
-- Integration with OpenCTI for advanced threat intelligence
-- Direct link to OpenCTI dashboard for further investigation
-
-### 🔄 Reverse DNS Lookup
-- Perform reverse DNS lookups for IP addresses
-
-### 📰 Related Articles
-- Fetch relevant news articles using Bing Search API
-- Customized search queries for more accurate results
+### 📊 Data Enrichment
+- Related articles fetched via Bing Search API
+- Customized search queries for result relevance
 
 ### 📤 Export Capabilities
-- Export results in multiple formats:
-  - CSV for spreadsheet analysis
-  - PDF for professional reporting
-  - STIX for threat intelligence sharing
+- CSV export for spreadsheet analysis
+- PDF export for reporting
+- STIX export for threat intelligence sharing
 
-### 📁 Bulk Import
-- Upload a CSV file with multiple IP addresses or domains
+### 📥 Data Import
+- CSV file upload for bulk IP/domain processing
 
-### ⚙️ Customizable Settings
-- Configure API keys for various services
-- Set OpenCTI URL for your specific instance
+### ⚙️ Customization
+- Configurable API settings
+- Adjustable OpenCTI URL
 
-## 🛠️ Getting Started
+### 🖥️ User Interface
+- Dark mode toggle
+- AI-generated result summaries using OpenAI's GPT model
+
+## 🛠️ Setup
 
 1. Ensure Python is installed on your system.
 
-2. Clone this repository:
+2. Clone the repository:
    ```
    git clone https://github.com/Alescev/IOCinformation.git
    cd IOCinformation
@@ -67,26 +60,28 @@ IP Geolocation Explorer is a powerful and user-friendly tool that provides compr
    pip install -r requirements.txt
    ```
 
-4. Create your configuration file:
+4. Configure API keys:
    - Copy `config.example.py` to `config.py`
-   - Open `config.py` and replace the placeholder API keys with your own
+   - Replace placeholder API keys in `config.py` with valid keys
 
 5. Launch the application:
    ```
    python main.py
    ```
 
-## 🖥️ Usage
+## 📋 Usage
 
-1. Enter IP addresses or domain names in the input field (comma-separated for multiple entries)
-2. Click "Search" or press Enter to initiate the lookup
-3. View results on the interactive map and in the detailed results panel
-4. Use additional features like "More Info", "Detailed Reputation", and "Reverse DNS" for in-depth analysis
-5. Export your results using the export buttons
+1. Input IP addresses or domain names (comma-separated for multiple entries)
+2. Initiate lookup
+3. View results on the map and in the detailed panel
+4. Utilize additional features (More Info, Detailed Reputation, Reverse DNS)
+5. Generate AI-powered summary of results
+6. Export results as needed
+7. Toggle dark mode as preferred
 
-## 🔑 API Keys
+## 🔑 Required API Keys
 
-To fully utilize all features, you'll need to obtain API keys for the following services:
+The following API keys are required for full functionality:
 
 - VirusTotal
 - AbuseIPDB
@@ -94,5 +89,6 @@ To fully utilize all features, you'll need to obtain API keys for the following 
 - IPQualityScore
 - OpenCTI
 - Bing Search
+- OpenAI
 
-Enter these keys in the Settings panel within the application.
+Configure these keys in the application's Settings panel.

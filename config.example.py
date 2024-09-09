@@ -5,7 +5,8 @@ API_KEYS = {
     'greynoise': "your_greynoise_api_key_here",
     'ipqualityscore': "your_ipqualityscore_api_key_here",
     'opencti': "your_opencti_api_key_here",
-    'bing': "your_bing_api_key_here"
+    'bing': "your_bing_api_key_here",
+    'openai': "your_openai_api_key_here"
 }
 
 # OpenCTI URL

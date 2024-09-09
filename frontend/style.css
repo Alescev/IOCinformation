@@ -9,6 +9,12 @@
     --danger-color: #e74c3c;
     --warning-color: #f39c12;
     --success-color: #2ecc71;
+    --dark-background: #1a1a1a;
+    --dark-text: #f0f0f0;
+    --dark-card-background: #2c2c2c;
+    --dark-primary-color: #3498db;
+    --dark-secondary-color: #2c3e50;
+    --dark-accent-color: #e74c3c;
 }
 
 /* Base styles */
@@ -20,15 +26,29 @@ body {
     color: var(--text-color);
 }
 
+body.dark-mode {
+    background-color: var(--dark-background);
+    color: var(--dark-text);
+}
+
 #app {
     max-width: 1600px;
     margin: 0 auto;
     padding: 40px;
 }
 
+body.dark-mode #app {
+    background-color: var(--dark-background);
+}
+
 /* Typography */
 h1, h2 {
     color: var(--primary-color);
+}
+
+body.dark-mode h1,
+body.dark-mode h2 {
+    color: var(--dark-primary-color);
 }
 
 h1 {
@@ -49,6 +69,14 @@ h2 {
 header {
     text-align: center;
     margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+header h1 {
+    margin: 0;
 }
 
 #input-container {
@@ -72,6 +100,15 @@ header {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+body.dark-mode #results-container,
+body.dark-mode #map-container,
+body.dark-mode #settings-container,
+body.dark-mode .legend-item,
+body.dark-mode .dialog-content {
+    background-color: var(--dark-card-background);
+    color: var(--dark-text);
+}
+
 /* Input and buttons */
 #ip-input, #search-button, .reverse-lookup-button, #export-csv, #export-pdf, #export-stix, #csv-upload-button {
     padding: 15px 30px;
@@ -83,6 +120,13 @@ header {
 #ip-input {
     flex-grow: 1;
     border: 2px solid var(--secondary-color);
+}
+
+body.dark-mode #ip-input,
+body.dark-mode #settings-form input {
+    background-color: var(--dark-secondary-color);
+    color: var(--dark-text);
+    border-color: var(--dark-accent-color);
 }
 
 #ip-input:focus {
@@ -99,10 +143,31 @@ header {
     cursor: pointer;
 }
 
+body.dark-mode #search-button,
+body.dark-mode .reverse-lookup-button,
+body.dark-mode #export-csv,
+body.dark-mode #export-pdf,
+body.dark-mode #export-stix,
+body.dark-mode #csv-upload-button,
+body.dark-mode #settings-form button {
+    background-color: var(--dark-primary-color);
+    color: var(--dark-text);
+}
+
 #search-button:hover, .reverse-lookup-button:hover, #export-csv:hover, #export-pdf:hover, #export-stix:hover, #csv-upload-button:hover {
     background-color: var(--button-hover);
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode #search-button:hover,
+body.dark-mode .reverse-lookup-button:hover,
+body.dark-mode #export-csv:hover,
+body.dark-mode #export-pdf:hover,
+body.dark-mode #export-stix:hover,
+body.dark-mode #csv-upload-button:hover,
+body.dark-mode #settings-form button:hover {
+    background-color: var(--dark-accent-color);
 }
 
 #search-button:disabled {
@@ -132,6 +197,11 @@ header {
     overflow: hidden;
     background-color: var(--card-background);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+body.dark-mode .legend-item {
+    border-color: var(--dark-secondary-color);
+    background-color: var(--dark-card-background);
 }
 
 .main-content {
@@ -191,12 +261,28 @@ header {
     display: inline-block;
 }
 
+body.dark-mode .more-info-button,
+body.dark-mode .detailed-reputation-button,
+body.dark-mode .reverse-lookup-button,
+body.dark-mode .opencti-link {
+    background-color: var(--dark-secondary-color);
+    color: var(--dark-text);
+}
+
 .more-info-button:hover,
 .detailed-reputation-button:hover,
 .reverse-lookup-button:hover,
 .opencti-link:hover {
     background-color: var(--button-hover);
     color: white;
+}
+
+body.dark-mode .more-info-button:hover,
+body.dark-mode .detailed-reputation-button:hover,
+body.dark-mode .reverse-lookup-button:hover,
+body.dark-mode .opencti-link:hover {
+    background-color: var(--dark-accent-color);
+    color: var(--dark-text);
 }
 
 /* Map styling */
@@ -209,15 +295,55 @@ header {
 
 /* Export container */
 #export-container {
-    display: none;
+    display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    gap: 10px; /* Add gap between buttons */
 }
 
+#export-container button {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode #export-container button {
+    background-color: var(--dark-primary-color);
+    color: var(--dark-text);
+}
+
+#export-container button:hover {
+    background-color: var(--button-hover);
+}
+
+body.dark-mode #export-container button:hover {
+    background-color: var(--dark-accent-color);
+}
+
+/* Remove or comment out these specific button styles */
+/*
 #export-csv, #export-pdf, #export-stix {
     flex: 1;
     margin: 0 5px;
 }
+*/
+
+/* Remove or comment out these specific generate summary styles */
+/*
+#generate-summary {
+    background-color: var(--accent-color);
+}
+
+#generate-summary:hover {
+    background-color: #2980b9;
+}
+*/
 
 /* Responsive design */
 @media (max-width: 768px) {
@@ -244,6 +370,10 @@ header {
     align-self: center; /* Center vertically */
 }
 
+body.dark-mode .reputation-content {
+    background-color: var(--dark-secondary-color);
+}
+
 .reputation-header {
     display: flex;
     align-items: center;
@@ -265,6 +395,10 @@ header {
     padding: 5px;
     background-color: rgba(255, 255, 255, 0.5);
     border-radius: 4px;
+}
+
+body.dark-mode .osint-item {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 #settings-container {
@@ -312,8 +446,17 @@ header {
     align-self: flex-start;
 }
 
+body.dark-mode #settings-form button {
+    background-color: var(--dark-primary-color);
+    color: var(--dark-text);
+}
+
 #settings-form button:hover {
     background-color: var(--button-hover);
+}
+
+body.dark-mode #settings-form button:hover {
+    background-color: var(--dark-accent-color);
 }
 
 #toggle-api-visibility {
@@ -336,6 +479,10 @@ header {
     text-decoration: none;
     font-weight: bold;
     margin-left: auto; /* Push the link to the right */
+}
+
+body.dark-mode .opencti-link {
+    color: var(--dark-primary-color);
 }
 
 .opencti-link:hover {
@@ -364,6 +511,11 @@ header {
     overflow-y: auto;
 }
 
+body.dark-mode .dialog-content {
+    background-color: var(--dark-card-background);
+    color: var(--dark-text);
+}
+
 .close-dialog {
     margin-top: 20px;
     padding: 5px 10px;
@@ -374,8 +526,17 @@ header {
     cursor: pointer;
 }
 
+body.dark-mode .close-dialog {
+    background-color: var(--dark-primary-color);
+    color: var(--dark-text);
+}
+
 .close-dialog:hover {
     background-color: var(--button-hover);
+}
+
+body.dark-mode .close-dialog:hover {
+    background-color: var(--dark-accent-color);
 }
 
 .reputation-status.low {
@@ -421,6 +582,10 @@ header {
     color: var(--accent-color);
 }
 
+body.dark-mode .domain-name {
+    color: var(--dark-accent-color);
+}
+
 #settings-form button[type="submit"]:disabled {
     background-color: #cccccc;
     color: #666666;
@@ -434,9 +599,17 @@ header {
     border-radius: 8px;
 }
 
+body.dark-mode .bing-results-container {
+    background-color: var(--dark-secondary-color);
+}
+
 .bing-results-container h4 {
     margin-top: 0;
     color: var(--primary-color);
+}
+
+body.dark-mode .bing-results-container h4 {
+    color: var(--dark-primary-color);
 }
 
 .bing-results-container ul {
@@ -453,6 +626,116 @@ header {
     text-decoration: none;
 }
 
+body.dark-mode .bing-results-container a {
+    color: var(--dark-primary-color);
+}
+
 .bing-results-container a:hover {
     text-decoration: underline;
+}
+
+/* Add these styles at the end of the file */
+#summary-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: var(--card-background);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode #summary-container {
+    background-color: var(--dark-card-background);
+    color: var(--dark-text);
+}
+
+#summary-content {
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+}
+
+/* Add this if you want a small separation between export buttons and generate summary */
+#export-csv, #export-pdf, #export-stix {
+    margin-right: 5px;
+}
+
+/* Add or update these styles in your CSS file */
+#summary-content {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+#summary-content h1 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+body.dark-mode #summary-content h1 {
+    color: var(--dark-primary-color);
+}
+
+#summary-content h2 {
+    font-size: 20px;
+    color: #34495e;
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+body.dark-mode #summary-content h2 {
+    color: var(--dark-text);
+}
+
+#summary-content h3 {
+    font-size: 18px;
+    color: #2980b9;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
+
+body.dark-mode #summary-content h3 {
+    color: var(--dark-accent-color);
+}
+
+#summary-content strong {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+body.dark-mode #summary-content strong {
+    color: var(--dark-text);
+}
+
+/* Add this new style for the dark mode toggle button */
+#dark-mode-toggle {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#dark-mode-toggle:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+body.dark-mode #dark-mode-toggle {
+    background-color: var(--dark-primary-color);
+    color: var(--dark-text);
+}
+
+body.dark-mode #dark-mode-toggle:hover {
+    background-color: var(--dark-accent-color);
+}
+
+#dark-mode-icon {
+    font-size: 16px;
 }
