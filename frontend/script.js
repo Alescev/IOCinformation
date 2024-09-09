@@ -488,58 +488,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        let exportFunction;
-        switch (format) {
-            case 'csv':
-                exportFunction = exportCSV;
-                break;
-            case 'pdf':
-                exportFunction = exportPDF;
-                break;
-            case 'stix':
-                exportFunction = exportSTIX;
-                break;
-            default:
-                alert('Invalid export format');
-                return;
+        // Include AI summary if available
+        const summaryContent = document.getElementById('summary-content');
+        if (summaryContent && summaryContent.textContent) {
+            currentData.ai_summary = summaryContent.textContent;
         }
 
-        exportFunction();
-    }
-
-    function exportCSV() {
-        backend.export_csv(JSON.stringify(currentData), function(response) {
+        backend[`export_${format}`](JSON.stringify(currentData), function(response) {
             const data = JSON.parse(response);
             if (data.status === 'success') {
-                alert('CSV file exported successfully: ' + data.filename);
-            } else {
-                alert('Error exporting CSV: ' + data.message);
-            }
-        });
-    }
-
-    function exportPDF() {
-        backend.export_pdf(JSON.stringify(currentData), function(response) {
-            const data = JSON.parse(response);
-            if (data.status === 'success') {
-                alert('PDF file exported successfully: ' + data.filename);
+                alert(`${format.toUpperCase()} file exported successfully: ${data.filename}`);
             } else if (data.status === 'cancelled') {
-                console.log('PDF export cancelled by user');
+                console.log(`${format.toUpperCase()} export cancelled by user`);
             } else {
-                alert('Error exporting PDF: ' + data.message);
-            }
-        });
-    }
-
-    function exportSTIX() {
-        backend.export_stix(JSON.stringify(currentData), function(response) {
-            const data = JSON.parse(response);
-            if (data.status === 'success') {
-                alert('STIX file exported successfully: ' + data.filename);
-            } else if (data.status === 'cancelled') {
-                console.log('STIX export cancelled by user');
-            } else {
-                alert('Error exporting STIX: ' + data.message);
+                alert(`Error exporting ${format.toUpperCase()}: ${data.message}`);
             }
         });
     }

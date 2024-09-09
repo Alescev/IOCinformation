@@ -422,7 +422,7 @@ class Backend(QObject):
             elements = []
             styles = getSampleStyleSheet()
 
-            # Custom style for the title
+            # Custom styles
             title_style = ParagraphStyle(
                 'Title',
                 parent=styles['Title'],
@@ -430,41 +430,66 @@ class Backend(QObject):
                 spaceAfter=12,
                 textColor=colors.darkblue
             )
-
-            # Custom style for table headers
             header_style = ParagraphStyle(
                 'Header',
                 parent=styles['Normal'],
-                fontSize=12,
+                fontSize=14,
                 textColor=colors.white,
-                alignment=1  # Center alignment
+                alignment=1
             )
+            subheader_style = ParagraphStyle(
+                'Subheader',
+                parent=styles['Normal'],
+                fontSize=12,
+                textColor=colors.darkblue,
+                spaceBefore=6,
+                spaceAfter=6
+            )
+            normal_style = ParagraphStyle(
+                'Normal',
+                parent=styles['Normal'],
+                fontSize=10
+            )
+
+            # Title
+            elements.append(Paragraph("IP Geolocation Report", title_style))
+            elements.append(Spacer(1, 20))
+
+            # Date and Time
+            elements.append(Paragraph(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", normal_style))
+            elements.append(Spacer(1, 20))
+
+            # AI Summary (if available)
+            if 'ai_summary' in data and data['ai_summary']:
+                elements.append(Paragraph("AI-Generated Summary", subheader_style))
+                elements.append(Paragraph(data['ai_summary'], normal_style))
+                elements.append(Spacer(1, 20))
 
             for info in data['detailed_info']:
                 if info:
-                    # Add Input (IP or domain) as title
+                    # Input (IP or domain) as title
                     input_value = info.get('original_domain', info['query'])
-                    elements.append(Paragraph(f"Input: {input_value}", title_style))
-                    elements.append(Spacer(1, 20))
+                    elements.append(Paragraph(f"Input: {input_value}", subheader_style))
+                    elements.append(Spacer(1, 10))
 
                     # Create table data
                     table_data = [
                         [Paragraph('Field', header_style), Paragraph('Value', header_style)],
-                        ['IP', info['query']],
-                        ['Country', info['country']],
-                        ['City', info['city']],
-                        ['Region', info['regionName']],
-                        ['ZIP', info['zip']],
-                        ['Latitude', str(info['lat'])],
-                        ['Longitude', str(info['lon'])],
-                        ['Timezone', info['timezone']],
-                        ['ISP', info['isp']],
-                        ['Organization', info['org']],
-                        ['AS', info['as']],
-                        ['VirusTotal Score', info['osint']['virustotal']['score'] if info['osint']['virustotal'] else 'N/A'],
-                        ['AbuseIPDB Score', str(info['osint']['abuseipdb']['abuse_confidence_score']) if info['osint']['abuseipdb'] else 'N/A'],
-                        ['GreyNoise Classification', info['osint']['greynoise']['classification'] if info['osint']['greynoise'] else 'N/A'],
-                        ['IPQualityScore Fraud Score', str(info['osint']['ipqualityscore']['fraud_score']) if info['osint']['ipqualityscore'] else 'N/A']
+                        [Paragraph('IP', normal_style), Paragraph(info['query'], normal_style)],
+                        [Paragraph('Country', normal_style), Paragraph(info['country'], normal_style)],
+                        [Paragraph('City', normal_style), Paragraph(info['city'], normal_style)],
+                        [Paragraph('Region', normal_style), Paragraph(info['regionName'], normal_style)],
+                        [Paragraph('ZIP', normal_style), Paragraph(info['zip'], normal_style)],
+                        [Paragraph('Latitude', normal_style), Paragraph(str(info['lat']), normal_style)],
+                        [Paragraph('Longitude', normal_style), Paragraph(str(info['lon']), normal_style)],
+                        [Paragraph('Timezone', normal_style), Paragraph(info['timezone'], normal_style)],
+                        [Paragraph('ISP', normal_style), Paragraph(info['isp'], normal_style)],
+                        [Paragraph('Organization', normal_style), Paragraph(info['org'], normal_style)],
+                        [Paragraph('AS', normal_style), Paragraph(info['as'], normal_style)],
+                        [Paragraph('VirusTotal Score', normal_style), Paragraph(str(info['osint']['virustotal'].get('score', 'N/A')) if info['osint']['virustotal'] else 'N/A', normal_style)],
+                        [Paragraph('AbuseIPDB Score', normal_style), Paragraph(str(info['osint']['abuseipdb'].get('abuse_confidence_score', 'N/A')) if info['osint']['abuseipdb'] else 'N/A', normal_style)],
+                        [Paragraph('GreyNoise Classification', normal_style), Paragraph(info['osint']['greynoise'].get('classification', 'N/A') if info['osint']['greynoise'] else 'N/A', normal_style)],
+                        [Paragraph('IPQualityScore Fraud Score', normal_style), Paragraph(str(info['osint']['ipqualityscore'].get('fraud_score', 'N/A')) if info['osint']['ipqualityscore'] else 'N/A', normal_style)]
                     ]
 
                     # Create and style the table
@@ -472,21 +497,60 @@ class Backend(QObject):
                     table.setStyle(TableStyle([
                         ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
                         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                         ('FONTSIZE', (0, 0), (-1, 0), 12),
                         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
                         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
                         ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-                        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                         ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
                         ('FONTSIZE', (0, 1), (-1, -1), 10),
                         ('TOPPADDING', (0, 1), (-1, -1), 6),
                         ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
                         ('GRID', (0, 0), (-1, -1), 1, colors.black),
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                        ('WORDWRAP', (0, 0), (-1, -1)),
                     ]))
                     elements.append(table)
+
+                    # OpenCTI Information
+                    if 'opencti' in info and info['opencti'].get('found'):
+                        elements.append(Spacer(1, 10))
+                        elements.append(Paragraph("OpenCTI Information", subheader_style))
+                        opencti_data = [
+                            [Paragraph('Field', header_style), Paragraph('Value', header_style)],
+                            [Paragraph('Labels', normal_style), Paragraph(', '.join(info['opencti'].get('labels', [])), normal_style)],
+                            [Paragraph('ID', normal_style), Paragraph(info['opencti'].get('id', 'N/A'), normal_style)]
+                        ]
+                        opencti_table = Table(opencti_data, colWidths=[2*inch, 3.5*inch])
+                        opencti_table.setStyle(TableStyle([
+                            ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
+                            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                            ('FONTSIZE', (0, 0), (-1, 0), 12),
+                            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+                            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                            ('FONTSIZE', (0, 1), (-1, -1), 10),
+                            ('TOPPADDING', (0, 1), (-1, -1), 6),
+                            ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+                            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                            ('WORDWRAP', (0, 0), (-1, -1)),
+                        ]))
+                        elements.append(opencti_table)
+
+                    # Bing Search Results
+                    if 'bing_results' in info and info['bing_results'] and not isinstance(info['bing_results'], dict):
+                        elements.append(Spacer(1, 10))
+                        elements.append(Paragraph("Related Articles", subheader_style))
+                        for result in info['bing_results']:
+                            elements.append(Paragraph(f"• {result['name']}", normal_style))
+                            elements.append(Paragraph(f"  {result['url']}", ParagraphStyle('Italic', parent=normal_style, fontName='Helvetica-Oblique')))
+                            elements.append(Spacer(1, 5))
+
                     elements.append(PageBreak())
 
             # Build the PDF
