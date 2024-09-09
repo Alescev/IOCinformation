@@ -673,4 +673,37 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeIcon = document.getElementById('dark-mode-icon');
+    const body = document.body;
+
+    // Function to update button text and icon
+    function updateDarkModeButton(isDarkMode) {
+        if (isDarkMode) {
+            darkModeToggle.innerHTML = '<span id="dark-mode-icon">☀️</span> Light Mode';
+        } else {
+            darkModeToggle.innerHTML = '<span id="dark-mode-icon">🌙</span> Dark Mode';
+        }
+    }
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        body.classList.add('dark-mode');
+        updateDarkModeButton(true);
+    } else {
+        updateDarkModeButton(false);
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        const isDarkMode = body.classList.contains('dark-mode');
+        if (isDarkMode) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', null);
+        }
+        updateDarkModeButton(isDarkMode);
+    });
 });
