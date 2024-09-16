@@ -1,6 +1,6 @@
-# 🌐 IP Geolocation Explorer
+# 🌐 IOC Information
 
-IP Geolocation Explorer is a tool designed for efficient IP and domain lookups, primarily for use by cyber threat intelligence analysts. It provides comprehensive information about network entities, leveraging multiple data sources and APIs. This application was developed with assistance from CursorAI to enhance functionality and code quality.
+IOC Information is a tool designed for efficient IP and domain lookups, primarily for use by cyber threat intelligence analysts. It provides comprehensive information about network entities, leveraging multiple data sources and APIs. This application was developed with assistance from CursorAI to enhance functionality and code quality.
 
 ## 🚀 Features
 
