@@ -92,3 +92,14 @@ The following API keys are required for full functionality:
 - OpenAI
 
 Configure these keys in the application's Settings panel.
+
+
+## Examples
+- Example 1
+![example_1](https://github.com/user-attachments/assets/4fcf8312-2246-4cb6-b859-ba9bb596abd9)
+- Example 2
+![example_2](https://github.com/user-attachments/assets/248a21b9-1543-4c9e-82b8-e9addeb9f278)
+- Example 3
+![example_3](https://github.com/user-attachments/assets/7097c376-2ce6-4ff0-934d-ee52d077b100)
+- Example 4
+![example_4](https://github.com/user-attachments/assets/c2edd99e-ac8a-4bbd-9a7e-cd649407ac31)
